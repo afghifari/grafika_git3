@@ -1,10 +1,10 @@
 all: clean mycolor mybufferMem
 
 mycolor:
-	g++ -o myColor buildITB/bufferMem.cpp buildITB/mColor.cpp buildITB/color.cpp -std=c++11
+	g++ -o myColor projectUTS/bufferMem.cpp projectUTS/mColor.cpp projectUTS/color.cpp -std=c++11
 
 mybufferMem :
-	g++ -o mybufferMem buildITB/color.cpp buildITB/bufferMem.cpp buildITB/mBufferMem.cpp buildITB/Point.cpp -std=c++11
+	g++ -o mybufferMem projectUTS/color.cpp projectUTS/bufferMem.cpp projectUTS/mBufferMem.cpp projectUTS/Point.cpp -std=c++11
 	
 clean:
 	$(RM) mycolor mybufferMem
