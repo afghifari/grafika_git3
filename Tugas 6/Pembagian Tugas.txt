@@ -1,0 +1,8 @@
+Pembagian Tugas:
+13514080 - Membuat pohon dan jalan besar
+13514082 - Membuat algoritma keystroke
+13514084 - Membuat pohon dan jalan besar serta membuat data source
+13514086 - Membuat algoritma show/hide
+13514088 - Membuat main program serta stuktur data
+13514092 - Membuat data source untuk digunakan serta memplot bangunan serta jalan
+13514094 - Membuat keystroke serta struktur data
