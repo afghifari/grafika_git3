@@ -1,10 +1,5 @@
-all: clean mycolor mybufferMem
+all:
+	g++ -o main main.cpp datastructure/*.cpp datastructure/base/*.cpp -lpthread -lm -std=c++0x -pthread
 
-mycolor:
-	g++ -o myColor projectUTS/bufferMem.cpp projectUTS/mColor.cpp projectUTS/color.cpp -std=c++11
-
-mybufferMem :
-	g++ -o mybufferMem projectUTS/color.cpp projectUTS/bufferMem.cpp projectUTS/mBufferMem.cpp projectUTS/Point.cpp -std=c++11
-	
 clean:
-	$(RM) mycolor mybufferMem
+	rm main
