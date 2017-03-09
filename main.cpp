@@ -43,14 +43,16 @@ const struct timespec* delayperframe = (const struct timespec[]){{0,2*16666667L}
 void drawCanvas(Canvas *C){
 	for(int i = 0; i < height; i++){
 		for(int j = 0; j < width; j++){
-			int location = (j + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
-				(i + vinfo.yoffset) * finfo.line_length;
+			if (i < vinfo.yres && j < vinfo.xres) {
+				int location = (j + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+					(i + vinfo.yoffset) * finfo.line_length;
 
-			if (vinfo.bits_per_pixel == 32) {
-				*(fbp + location) = C->IMAGE[j][i].getB();
-				*(fbp + location + 1) = C->IMAGE[j][i].getG();
-				*(fbp + location + 2) = C->IMAGE[j][i].getR();
-				*(fbp + location + 3) = 0;
+				if (vinfo.bits_per_pixel == 32) {
+					*(fbp + location) = C->IMAGE[j][i].getB();
+					*(fbp + location + 1) = C->IMAGE[j][i].getG();
+					*(fbp + location + 2) = C->IMAGE[j][i].getR();
+					*(fbp + location + 3) = 0;
+				}
 			}
 		}
 	}
@@ -82,7 +84,11 @@ void initAll(){
 	printf("%dx%d, %dbpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel);
 
 	// Figure out the size of the screen in bytes
-	screensize = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel / 8;
+	if (vinfo.xres > 900) {
+		screensize = vinfo.xres * vinfo.yres * vinfo.bits_per_pixel / 8;
+	} else {
+		screensize = finfo.line_length * vinfo.yres * vinfo.bits_per_pixel / 8;
+	}
 
 	// Map the device to memory
 	fbp = (char *)mmap(0, screensize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
@@ -96,7 +102,7 @@ void initAll(){
 
 void initCaptureKeyboard(){
 
-	// --- initialiation keystroke capture 
+	// --- initialiation keystroke capture
 
 
 	// Input keyboard device file
@@ -222,15 +228,15 @@ int main(){
 	initAll();
 	bangunan = new Canvas("src/bangunanitb.txt","src/potato","src/tree.txt");
     clipping = new Canvas("src/bangunanitb.txt", "src/potato","src/tree.txt");
-	
-	b = true, p = true, j = true;    
+
+	b = true, p = true, j = true;
 
 	startKeystrokeThread();
 	while(true){
 		bangunan->setArg(p, b, j);
-        
+
         bangunan->clear_all();
-		
+
         bangunan->draw_all_shapes(P1, scale);
         drawCanvas(bangunan);
 		nanosleep(delayperframe, NULL);
@@ -238,4 +244,3 @@ int main(){
 	garbageCaptureKeyboard();
 	return 0;
 }
-
