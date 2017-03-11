@@ -15,6 +15,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <thread>
+#include <mutex>
+#include <deque>
 
 #include "datastructure/point.h"
 #include "datastructure/line.h"
@@ -38,7 +40,9 @@ int scale = 1;
 Canvas *bangunan;
 Canvas *clipping;
 bool b, j, p;
-const struct timespec* delayperframe = (const struct timespec[]){{0,2*16666667L}};
+
+std::mutex qMutex;
+std::deque<char> keyQueue;
 
 //drawer
 void drawCanvas(Canvas *C){
@@ -145,23 +149,42 @@ void processInput(char chardata){
 			break;
 		case 'w':
 			// Up arrow trigger
-			P1.setY(P1.getY() - 1);
+			P1.setY(P1.getY() - 10);
 			break;
 		case 'a':
 			// Left arrow trigger
-			P1.setX(P1.getX() - 1);
-			break;
-		case 's':
-			// Right arrow trigger
-			P1.setX(P1.getX() + 1);
+			P1.setX(P1.getX() - 10);
 			break;
 		case 'd':
+			// Right arrow trigger
+			P1.setX(P1.getX() + 10);
+			break;
+		case 's':
 			// Down arrow trigger
-			P1.setY(P1.getY() + 1);
+			P1.setY(P1.getY() + 10);
 			break;
 		default:
 			break;
 	}
+}
+
+void keyReader() {
+	while (1) {
+		char c = getch();
+		{
+			std::lock_guard<std::mutex> lck(qMutex);
+
+			keyQueue.push_back(c);
+		}
+	}
+}
+
+void startKeystrokeThread(){
+	// Constructs the new thread and runs it. Does not block execution.
+	std::thread t1(keyReader);
+
+	// Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
+	t1.detach();
 }
 
 int main(){
@@ -170,15 +193,33 @@ int main(){
   clipping = new Canvas("src/bangunanitb.txt", "src/potato","src/tree.txt");
 
 	b = true, p = true, j = true;
+	startKeystrokeThread();
+
+	bool dirty = true;
 
 	while(true){
-		bangunan->setArg(p, b, j);
+		if (dirty) {
+			bangunan->setArg(p, b, j);
 
-	  bangunan->clear_all();
+		  bangunan->clear_all();
 
-	  bangunan->draw_all_shapes(P1, scale);
-	  drawCanvas(bangunan);
-		processInput(getch());
+		  bangunan->draw_all_shapes(P1, scale);
+		  drawCanvas(bangunan);
+
+			dirty = false;
+		}
+
+		{
+			std::lock_guard<std::mutex> lck(qMutex);
+			while (!keyQueue.empty()) {
+				processInput(keyQueue.front());
+				keyQueue.pop_front();
+				dirty = true;
+			}
+		}
+
+		// About 30 fps
+		usleep(33000);
 	}
 
 	return 0;
