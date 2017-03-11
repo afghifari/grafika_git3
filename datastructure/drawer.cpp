@@ -30,6 +30,8 @@ void Drawer::draw_shape(Shape *S){
 }
 
 void Drawer::gambarGaris(Point P1, Point P2, int tebal) {
+	if (!lineInsideRect(P1, P2, 0, 0, xClipWidth, yClipHeight)) return;
+
 	for(int t1 = -tebal; t1 <= tebal; ++t1){
 		for(int t2 = -tebal; t2 <= tebal; ++t2){
 			int xawal = P1.getX() < P2.getX() ? P1.getX() : P2.getX();
