@@ -33,9 +33,20 @@ void Point::rotate(const Point& P, int degree){
 
 }
 
+Point Point::translated(int deltaX, int deltaY){
+	return Point(getX() + deltaX, getY() + deltaY);
+}
+
 Point Point::scaleUp(const Point& center, double scale){
 	Point P_new;
 	P_new.setX((int)((getX() - center.getX()) * scale) + center.getX());
 	P_new.setY((int)((getY() - center.getY()) * scale) + center.getY());
+	return P_new;
+}
+
+Point Point::scaleUp(double scale){
+	Point P_new;
+	P_new.setX((int)(getX() * scale));
+	P_new.setY((int)(getY() * scale));
 	return P_new;
 }

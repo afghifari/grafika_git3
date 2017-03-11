@@ -23,6 +23,8 @@
 #include "datastructure/color.h"
 #include "datastructure/shape.h"
 #include "datastructure/canvas.h"
+#include "datastructure/drawer.h"
+#include "datastructure/itbmap.h"
 
 using namespace std;
 
@@ -33,12 +35,9 @@ long int location = 0;
 struct fb_var_screeninfo vinfo;
 struct fb_fix_screeninfo finfo;
 char *fbp = 0;
-Point P1(200,200);
-Point P2(300, 200);
+Point viewPortCenter(0,0);
 int scale = 1;
 
-Canvas *bangunan;
-Canvas *clipping;
 bool b, j, p;
 
 std::mutex qMutex;
@@ -46,16 +45,16 @@ std::deque<char> keyQueue;
 
 //drawer
 void drawCanvas(Canvas *C){
-	for(int i = 0; i < height; i++){
-		for(int j = 0; j < width; j++){
+	for(int i = 0; i < MAX_CANVAS_HEIGHT; i++){
+		for(int j = 0; j < MAX_CANVAS_WIDTH; j++){
 			if (i < vinfo.yres && j < vinfo.xres) {
 				int location = (j + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
 					(i + vinfo.yoffset) * finfo.line_length;
 
 				if (vinfo.bits_per_pixel == 32) {
-					*(fbp + location) = C->IMAGE[j][i].getB();
-					*(fbp + location + 1) = C->IMAGE[j][i].getG();
-					*(fbp + location + 2) = C->IMAGE[j][i].getR();
+					*(fbp + location) = C->getPixel(j, i).getB();
+					*(fbp + location + 1) = C->getPixel(j, i).getG();
+					*(fbp + location + 2) = C->getPixel(j, i).getR();
 					*(fbp + location + 3) = 0;
 				}
 			}
@@ -140,16 +139,16 @@ void processInput(char chardata){
 		case ' ':
 			break;
 		case 'w':
-			P1.setY(P1.getY() - 10);
+			viewPortCenter.setY(viewPortCenter.getY() - 10);
 			break;
 		case 'a':
-			P1.setX(P1.getX() - 10);
+			viewPortCenter.setX(viewPortCenter.getX() - 10);
 			break;
 		case 'd':
-			P1.setX(P1.getX() + 10);
+			viewPortCenter.setX(viewPortCenter.getX() + 10);
 			break;
 		case 's':
-			P1.setY(P1.getY() + 10);
+			viewPortCenter.setY(viewPortCenter.getY() + 10);
 			break;
 		default:
 			break;
@@ -174,8 +173,20 @@ void startKeystrokeThread(){
 
 int main(){
 	initAll();
-	bangunan = new Canvas("src/bangunanitb.txt","src/potato","src/tree.txt");
-	clipping = new Canvas("src/bangunanitb.txt", "src/potato","src/tree.txt");
+
+	Canvas canvas;
+	ITBMap itbMap("src/bangunanitb.txt","src/potato","src/tree.txt");
+	Drawer drawer(&canvas);
+	Drawer drawerZoom(&canvas);
+
+	drawer.xClipWidth = 600;
+	drawer.yClipHeight = 600;
+
+
+	drawerZoom.xOffset = 600;
+	drawerZoom.xClipWidth = 200;
+	drawerZoom.yClipHeight = 200;
+	drawerZoom.drawScale = 0.33;
 
 	b = true, p = true, j = true;
 	startKeystrokeThread();
@@ -184,12 +195,18 @@ int main(){
 
 	while(true){
 		if (dirty) {
-			bangunan->setArg(p, b, j);
+			drawer.xTranslate = -viewPortCenter.getX();
+			drawer.yTranslate = -viewPortCenter.getY();
+			drawer.drawScale = scale;
 
-			bangunan->clear_all();
+			itbMap.setArg(p, b, j);
 
-			bangunan->draw_all_shapes(P1, scale);
-			drawCanvas(bangunan);
+			canvas.clear_all();
+
+			drawer.draw_shapes(itbMap.get_all_drawn_shapes());
+			drawerZoom.draw_shapes(itbMap.get_all_drawn_shapes());
+
+			drawCanvas(&canvas);
 
 			dirty = false;
 		}
