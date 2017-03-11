@@ -118,49 +118,37 @@ int getch(void) {
 }
 
 void processInput(char chardata){
-	// Main loop, waiting for keystroke
-
 	switch(chardata){
 		case 'x':
 			terminate();
 			break;
 		case '-':
-			// Minus triggered
 			if(scale > 1) scale--;
 			break;
 		case '=':
-			// plus triggered
 			if(scale < 10) scale++;
 			break;
 		case 'p':
-			// P trigger
 			p ^= 1;
 			break;
 		case 'j':
-			// J trigger
 			j ^= 1;
 			break;
 		case 'b':
-			// B trigger
 			b ^= 1;
 			break;
 		case ' ':
-			// Space trigger
 			break;
 		case 'w':
-			// Up arrow trigger
 			P1.setY(P1.getY() - 10);
 			break;
 		case 'a':
-			// Left arrow trigger
 			P1.setX(P1.getX() - 10);
 			break;
 		case 'd':
-			// Right arrow trigger
 			P1.setX(P1.getX() + 10);
 			break;
 		case 's':
-			// Down arrow trigger
 			P1.setY(P1.getY() + 10);
 			break;
 		default:
@@ -180,17 +168,14 @@ void keyReader() {
 }
 
 void startKeystrokeThread(){
-	// Constructs the new thread and runs it. Does not block execution.
 	std::thread t1(keyReader);
-
-	// Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
 	t1.detach();
 }
 
 int main(){
 	initAll();
 	bangunan = new Canvas("src/bangunanitb.txt","src/potato","src/tree.txt");
-  clipping = new Canvas("src/bangunanitb.txt", "src/potato","src/tree.txt");
+	clipping = new Canvas("src/bangunanitb.txt", "src/potato","src/tree.txt");
 
 	b = true, p = true, j = true;
 	startKeystrokeThread();
@@ -201,10 +186,10 @@ int main(){
 		if (dirty) {
 			bangunan->setArg(p, b, j);
 
-		  bangunan->clear_all();
+			bangunan->clear_all();
 
-		  bangunan->draw_all_shapes(P1, scale);
-		  drawCanvas(bangunan);
+			bangunan->draw_all_shapes(P1, scale);
+			drawCanvas(bangunan);
 
 			dirty = false;
 		}
