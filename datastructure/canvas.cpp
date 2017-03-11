@@ -1,25 +1,25 @@
 #include "canvas.h"
 
 void read_file_bangunan(std::vector<Shape*>& bangunan, std::vector<Shape*>& bangunan_besar, std::string file_bangunan){
-	freopen(file_bangunan.c_str(), "r", stdin);
+	FILE * filePointer = fopen(file_bangunan.c_str(), "r");
 	// Remove the old S
 	for(int i = 0;i < (int)bangunan.size(); ++i){
 		delete bangunan[i];
-	}	
+	}
 	for(int i = 0;i < (int)bangunan_besar.size(); ++i){
 		delete bangunan_besar[i];
 	}
 	bangunan.clear();
 	bangunan_besar.clear();
 	int n;
-	while(scanf("%d", &n) != EOF){
+	while(fscanf(filePointer, "%d", &n) != EOF){
 		Shape *Sh = new Shape(n + 1);
 
 		Shape *Sh_besar = new Shape(n+1);
 
 		for(int i = 0;i < n; ++i){
 			int x, y;
-			scanf("%d%d", &x, &y);
+			fscanf(filePointer, "%d%d", &x, &y);
 			Point P = Point(x, y);
 			Point P_besar = Point(x+640, y);
 			Sh->setPoint(i, P);
@@ -34,11 +34,10 @@ void read_file_bangunan(std::vector<Shape*>& bangunan, std::vector<Shape*>& bang
 		bangunan.push_back(Sh);
 		bangunan_besar.push_back(Sh_besar);
 	}
-	fclose(stdin);
 }
 
 void read_file_jalan(std::vector<Shape*>& jalan, std::vector<Shape*>& jalan_besar, std::string file_jalan){
-	freopen(file_jalan.c_str(), "r", stdin);
+	FILE * filePointer = fopen(file_jalan.c_str(), "r");
 	// Remove the old S
 	for(int i = 0;i < (int)jalan.size(); ++i){
 		delete jalan[i];
@@ -49,12 +48,12 @@ void read_file_jalan(std::vector<Shape*>& jalan, std::vector<Shape*>& jalan_besa
 	jalan.clear();
 	jalan_besar.clear();
 	int n;
-	while(scanf("%d", &n) != EOF){
+	while(fscanf(filePointer, "%d", &n) != EOF){
 		Shape *Sh = new Shape(n);
 		Shape *Sh_besar = new Shape(n);
 		for(int i = 0;i < n; ++i){
 			int x, y;
-			scanf("%d%d", &x, &y);
+			fscanf(filePointer, "%d%d", &x, &y);
 			Point P = Point(x*137/100, y*137/100);
 			Point P_besar = Point((x*137/100)+640, y*137/100);
 			Sh->setPoint(i, P);
@@ -63,11 +62,10 @@ void read_file_jalan(std::vector<Shape*>& jalan, std::vector<Shape*>& jalan_besa
 		jalan.push_back(Sh);
 		jalan_besar.push_back(Sh_besar);
 	}
-	fclose(stdin);
 }
 
 void read_file_pohon(std::vector<Shape*>& pohon, std::vector<Shape*>& pohon_besar, std::string file_pohon){
-	freopen(file_pohon.c_str(), "r", stdin);
+	FILE * filePointer = fopen(file_pohon.c_str(), "r");
 	// Remove the old S
 	for(int i = 0;i < (int)pohon.size(); ++i){
 		delete pohon[i];
@@ -78,12 +76,12 @@ void read_file_pohon(std::vector<Shape*>& pohon, std::vector<Shape*>& pohon_besa
 	pohon.clear();
 	pohon_besar.clear();
 	int n;
-	while(scanf("%d", &n) != EOF){
+	while(fscanf(filePointer, "%d", &n) != EOF){
 		for(int i = 0;i < n; ++i){
 
 			int total_titik = 3;
 			int x, y;
-			scanf("%d%d", &x, &y);
+			fscanf(filePointer, "%d%d", &x, &y);
 			Point pusat = Point(x * 137 / 100, y * 137 / 100);
 			Point pusat_besar = Point((x * 137 / 100)+640, y * 137 / 100);
 			Shape *Sh = new Shape(total_titik + 1);
@@ -92,17 +90,17 @@ void read_file_pohon(std::vector<Shape*>& pohon, std::vector<Shape*>& pohon_besa
 				Point P = Point(pusat);
 				Point P_besar = Point(pusat_besar);
 				switch(j){
-					case 0: 
-						P.setY(P.getY() - 2); 
+					case 0:
+						P.setY(P.getY() - 2);
 						P_besar.setY(P_besar.getY() - 2);
 						break;
-					case 1: 
-						P.setX(P.getX() - 2); 
+					case 1:
+						P.setX(P.getX() - 2);
 						P_besar.setX(P_besar.getX() - 2);
 						break;
-					case 2: 
-						P.setX(P.getX() + 2); 
-						P_besar.setX(P_besar.getX() + 2); 
+					case 2:
+						P.setX(P.getX() + 2);
+						P_besar.setX(P_besar.getX() + 2);
 						break;
 				}
 				Sh->setPoint(j, P);
@@ -110,12 +108,11 @@ void read_file_pohon(std::vector<Shape*>& pohon, std::vector<Shape*>& pohon_besa
 			}
 			Sh->setPoint(total_titik, Sh->getPoint(0));
 			Sh_besar->setPoint(total_titik, Sh_besar->getPoint(0));
-			
+
 			pohon.push_back(Sh);
 			pohon_besar.push_back(Sh_besar);
 		}
 	}
-	fclose(stdin);
 }
 
 Canvas::Canvas(std::string file_bangunan, std::string file_jalan, std::string file_pohon) {
@@ -168,7 +165,7 @@ Shape* Canvas::get_jalan(int idx) const{
 }
 Shape* Canvas::get_pohon(int idx) const{
 	return pohon[idx];
-}	
+}
 
 int Canvas::get_bangunan_size() const{
 	return size_bangunan;
@@ -204,7 +201,7 @@ void Canvas::draw_bangunan(int idx, const Point& P, int scale){
 
 void Canvas::draw_jalan(int idx, const Point& P, int scale){
 	draw_shape(jalan[idx], P, scale, 1);
-	draw_shape(jalan_besar[idx], P, 1, 0);	
+	draw_shape(jalan_besar[idx], P, 1, 0);
 }
 
 void Canvas::draw_pohon(int idx, const Point& P, int scale){

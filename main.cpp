@@ -6,6 +6,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <iostream>
+#include <termios.h>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -100,147 +101,69 @@ void initAll(){
 	//============ EndOF Init FrameBuffer
 }
 
-void initCaptureKeyboard(){
+int getch(void) {
+	struct termios oldattr, newattr;
+	int ch;
+	tcgetattr( STDIN_FILENO, &oldattr );
+	newattr = oldattr;
+	newattr.c_lflag &= ~( ICANON | ECHO );
+	tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+	ch = getchar();
+	tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+	return ch;
+}
 
-	// --- initialiation keystroke capture
-
-
-	// Input keyboard device file
-	const char *dev = "/dev/input/event3";
-	struct input_event ev;
-	ssize_t n;
-	int fd;
-
-	// Open device for reference
-	fd = open(dev, O_RDONLY);
-
-	// Check if device is opened
-	if (fd == -1) {
-		fprintf(stderr, "Cannot open %s: %s.\n", dev, strerror(errno));
-		// return EXIT_FAILURE;
-	}
-
+void processInput(char chardata){
 	// Main loop, waiting for keystroke
-	while (1) {
 
-		// get stored value on keyboard device reference file
-		n = read(fd, &ev, sizeof ev);
-
-		// check if no stored value on device file
-		if (n == (ssize_t)-1) {
-			if (errno == EINTR)
-				continue;
-			else
-				break;
-		} else
-
-			// another empty
-			if (n != sizeof ev) {
-				errno = EIO;
-				break;
-			}
-
-		// if keystroke is stored on keyboard device reference file
-		if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
-
-			// if(ev.value == 0) // when it released
-
-			if(ev.value == 1) // when it pressed
-
-				switch(ev.code){
-					case 12:
-						// Minus triggered
-						if(scale > 1) scale--;
-						break;
-					case 13:
-						// plus triggered
-						if(scale < 10) scale++;
-						break;
-					case 25:
-						// P trigger
-						p ^= 1;
-						break;
-					case 36:
-						// J trigger
-						j ^= 1;
-						break;
-					case 48:
-						// B trigger
-						b ^= 1;
-						break;
-					case 57:
-						// Space trigger
-						break;
-					case 103:
-						// Up arrow trigger
-						P1.setY(P1.getY() - 1);
-						break;
-					case 105:
-						// Left arrow trigger
-						P1.setX(P1.getX() - 1);
-						break;
-
-					case 106:
-						// Right arrow trigger
-						P1.setX(P1.getX() + 1);
-						break;
-					case 108:
-						// Down arrow trigger
-						P1.setY(P1.getY() + 1);
-						break;
-
-					default:
-						break;
-
-				}
-
-			// if(ev.value == 2) // when it repeated
-
-			// More event code
-			// https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
-		}
-
+	switch(chardata){
+		case 'x':
+			terminate();
+			break;
+		case '-':
+			// Minus triggered
+			if(scale > 1) scale--;
+			break;
+		case '=':
+			// plus triggered
+			if(scale < 10) scale++;
+			break;
+		case 'p':
+			// P trigger
+			p ^= 1;
+			break;
+		case 'j':
+			// J trigger
+			j ^= 1;
+			break;
+		case 'b':
+			// B trigger
+			b ^= 1;
+			break;
+		case ' ':
+			// Space trigger
+			break;
+		default:
+			break;
 	}
-}
-
-void garbageCaptureKeyboard(){
-
-
-	// garbaging
-	fflush(stdout);
-	fprintf(stderr, "%s.\n", strerror(errno));
-
-	// --------
-}
-
-void startKeystrokeThread(){
-	// Constructs the new thread and runs it. Does not block execution.
-	std::thread t1(initCaptureKeyboard);
-
-	// Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
-	t1.detach();
 }
 
 int main(){
-	cout<<"Hello World"<<endl;
-
-
 	initAll();
 	bangunan = new Canvas("src/bangunanitb.txt","src/potato","src/tree.txt");
-    clipping = new Canvas("src/bangunanitb.txt", "src/potato","src/tree.txt");
+  clipping = new Canvas("src/bangunanitb.txt", "src/potato","src/tree.txt");
 
 	b = true, p = true, j = true;
 
-	startKeystrokeThread();
 	while(true){
 		bangunan->setArg(p, b, j);
 
-        bangunan->clear_all();
+	  bangunan->clear_all();
 
-        bangunan->draw_all_shapes(P1, scale);
-        drawCanvas(bangunan);
-		nanosleep(delayperframe, NULL);
+	  bangunan->draw_all_shapes(P1, scale);
+	  drawCanvas(bangunan);
+		processInput(getch());
 	}
-	garbageCaptureKeyboard();
+
 	return 0;
 }
