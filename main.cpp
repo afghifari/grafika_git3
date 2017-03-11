@@ -143,6 +143,22 @@ void processInput(char chardata){
 		case ' ':
 			// Space trigger
 			break;
+		case 'w':
+			// Up arrow trigger
+			P1.setY(P1.getY() - 1);
+			break;
+		case 'a':
+			// Left arrow trigger
+			P1.setX(P1.getX() - 1);
+			break;
+		case 's':
+			// Right arrow trigger
+			P1.setX(P1.getX() + 1);
+			break;
+		case 'd':
+			// Down arrow trigger
+			P1.setY(P1.getY() + 1);
+			break;
 		default:
 			break;
 	}
