@@ -29,6 +29,14 @@ public:
   int yTranslate;
   double drawScale;
 
+
+	int getcode(Point P);
+	int getcode(double x, double y);
+	void plotSlopPositiveLine (Point P1, Point P2, Color C);
+	void plotSlopNegativeLine (Point P1, Point P2, Color C);
+	void plotVerticalLine (Point P1, Point P2, Color C);
+	int xl,yl,xr,yr;
+	
 private:
   Canvas* destination;
 

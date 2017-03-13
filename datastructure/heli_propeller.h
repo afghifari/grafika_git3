@@ -10,6 +10,7 @@ class HeliPropeller: public Shape {
 		Point center;
 		void moveByX( int x);
 		void moveByY(int y);
+
 };
 
 #endif

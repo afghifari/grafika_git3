@@ -1,4 +1,9 @@
 #include "drawer.h"
+#define LEFT 1
+#define RIGHT 2
+#define BOTTOM 4
+#define TOP 8
+using namespace std;
 
 Drawer::Drawer(Canvas* c) {
 	destination = c;
@@ -11,6 +16,12 @@ Drawer::Drawer(Canvas* c) {
   xTranslate = 0;
   yTranslate = 0;
   drawScale = 1;
+  
+  xl = 0;
+	yl = 0;
+
+	xr = 800;
+	yr = 600;
 }
 
 void Drawer::draw_shapes(std::vector<Shape*> shapes) {
@@ -31,6 +42,7 @@ void Drawer::draw_shape(Shape *S){
 	}
 }
 
+/*
 void Drawer::gambarGaris(Point P1, Point P2, int tebal, Color color) {
 	if (!lineInsideRect(P1, P2, 0, 0, xClipWidth, yClipHeight)) return;
 
@@ -95,6 +107,7 @@ void Drawer::gambarGaris(Point P1, Point P2, int tebal, Color color) {
 		}
 	}
 }
+*/
 
 void Drawer::gambarPoint(const Point& P, Color color){
 	int x = P.getX();
@@ -106,4 +119,206 @@ void Drawer::gambarPoint(const Point& P, Color color){
 		destination->setPixel(xd, yd, color);
 	}
 
+}
+
+
+int Drawer::getcode(Point P){
+	int x = P.getX(), y = P.getY();
+	int code = 0;
+	//Perform Bitwise OR to get outcode
+	if(y > yr) code |=TOP;
+	if(y < yl) code |=BOTTOM;
+	if(x < xl) code |=LEFT;
+	if(x > xr) code |=RIGHT;
+	return code;
+}
+
+
+int Drawer::getcode(double x, double y){
+	
+	int code = 0;
+	//Perform Bitwise OR to get outcode
+	if(y > yr) code |=TOP;
+	if(y < yl) code |=BOTTOM;
+	if(x < xl) code |=LEFT;
+	if(x > xr) code |=RIGHT;
+	return code;
+}
+
+void Drawer::plotSlopPositiveLine (Point P1, Point P2, Color C) {
+	int dX, dY, p;
+	int i, j, x, y;
+
+	dX = abs(P2.getX() - P1.getX());
+	dY = abs(P2.getY() - P1.getY());
+	i = P1.getX();
+	j = P1.getY();
+	
+	if (dX >= dY) {
+		p = 2*dY - dX;
+
+		for (x=P1.getX(); x<=P2.getX(); x++) {
+			gambarPoint(Point(x,j), C);
+			if (p >= 0) {
+				p += 2* (dY - dX);
+				i++;
+				j++;
+			}
+			else {
+				p += 2*dY;
+				i++;
+			}
+		}
+	}
+	else {
+		p = 2*dX - dY;
+
+		for (y=P1.getY(); y<=P2.getY(); y++) {
+			gambarPoint(Point(i,y), C);
+			if (p >= 0) {
+				p += 2* (dX - dY);
+				i++;
+				j++;
+			}
+			else {
+				p += 2*dX;
+				j++;
+			}
+		}
+	}
+}
+
+
+void Drawer::plotSlopNegativeLine (Point P1, Point P2, Color C) {
+	int dX, dY, p;
+	int i, j, x, y;
+
+	dX = abs(P2.getX() - P1.getX());
+	dY = abs(P2.getY() - P1.getY());
+
+	if (dX >= dY) {
+		i = P1.getX();
+		j = P1.getY();
+		p = 2*dY - dX;		
+
+		for (x=P1.getX(); x<=P2.getX(); x++) {
+			gambarPoint(Point(x, j), C);
+			if (p >= 0) {
+				p += 2* (dY - dX);
+				i++;
+				j--;
+			}
+			else {
+				p += 2*dY;
+				i++;
+			}
+		}
+	}
+	else {
+		p = 2*dX - dY;
+		i = P2.getX();
+		j = P2.getY();
+
+		for (y=P2.getY(); y<=P1.getY(); y++) {
+			gambarPoint(Point(i,y), C);
+			if (p >= 0) {
+				p += 2* (dX - dY);
+				i--;
+				j++;
+			}
+			else {
+				p += 2*dX;
+				j++;
+			}
+		}
+	}
+}
+
+void Drawer::plotVerticalLine (Point P1, Point P2, Color C) {
+	int j;
+	
+	if (P2.getY() < P1.getY()) {
+		Point *temp = new Point(P1.getX(),P1.getY());
+			P1.setX(P2.getX());
+			P1.setY(P2.getY());
+			P2.setX(temp->getX());
+			P2.setY(temp->getY());	
+	}
+	
+	for(j = P1.getY() ; j <= P2.getY(); j++) {
+		gambarPoint(Point(P1.getX(),j), C);
+	}
+}
+
+void Drawer::gambarGaris (Point P1, Point P2, int tebal, Color C) {
+	bool accept = false;
+	double x0,y0,x1,y1;
+	x0 = P1.getX(); y0 = P1.getY();
+	x1 = P2.getX(); y1 = P2.getY();
+	int outcode1 = getcode(x0,y0);
+	int outcode2 = getcode(x1,y1);
+
+	while(1){
+		if(!(outcode1|outcode2)){
+			accept = true;
+			break;
+		}
+
+		else if(outcode2 & outcode1){
+			break;
+		}
+
+		else{
+			double x,y;
+			int outcode = outcode1 ? outcode1 : outcode2;
+
+			if (outcode & TOP) {           // point is above the clip rectangle
+				x = x0 + (x1 - x0) * (yr - y0) / (y1 - y0);
+				y = yr;
+			} else if (outcode & BOTTOM) { // point is below the clip rectangle
+				x = x0 + (x1 - x0) * (yl - y0) / (y1 - y0);
+				y = yl;
+			} else if (outcode & RIGHT) {  // point is to the right of clip rectangle
+				y = y0 + (y1 - y0) * (xr - x0) / (x1 - x0);
+				x = xr;
+			} else if (outcode & LEFT) {   // point is to the left of clip rectangle
+				y = y0 + (y1 - y0) * (xl - x0) / (x1 - x0);
+				x = xl;
+			}
+
+			if(outcode == outcode1){
+				x0 = x, y0 = y;
+				outcode1 = getcode(x,y);
+			}
+			else if(outcode == outcode2){
+				x1 = x, y1 = y;
+				outcode2 = getcode(x,y);
+			}
+		}
+
+
+	}
+	if(accept){
+		P1 = Point(x0,y0),P2=Point(x1,y1);
+		if (P1.getX() > P2.getX()) {
+			//P1.swapPoint(&P2); 
+			Point *temp = new Point(P1.getX(),P1.getY());
+			P1.setX(P2.getX());
+			P1.setY(P2.getY());
+			P2.setX(temp->getX());
+			P2.setY(temp->getY());
+		}
+
+		if ((P2.getX() >= P1.getX() && P1.getY() > P2.getY())) {
+			plotSlopNegativeLine(P1,P2,C);
+		}
+		else if (P1.getX() == P2.getX()) {
+			plotVerticalLine(P1,P2,C);
+		}
+		else {
+			plotSlopPositiveLine(P1,P2,C);
+		}	
+	}
+
+	
 }

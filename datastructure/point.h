@@ -6,12 +6,12 @@
 class Point : public BasePoint{
 	public:
 		Point();
-		Point(int,int);
+		Point(double,double);
 		Point(const Point&);
 
-		void translate(int, int);
+		void translate(double, double);
 		void rotate(const Point&, int);
-		Point translated(int, int);
+		Point translated(double, double);
 		Point scaleUp(const Point&,double);
 		Point scaleUp(double);
 };

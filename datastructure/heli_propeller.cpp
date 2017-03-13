@@ -29,18 +29,18 @@ HeliPropeller::HeliPropeller(Point _P,int _scale): Shape(13) {
 	center.setY(cy);
 	scale = 5;
 	setPoint(0,Point(cx-scale,cy-scale));
-			setPoint(1,Point(cx-12*scale,cy-scale));
-			setPoint(2,Point(cx-12*scale,cy+scale));
-			setPoint(3,Point(cx-scale,cy+scale));
-			setPoint(4,Point(cx-scale,cy+12*scale));
-			setPoint(5,Point(cx+scale,cy+12*scale));
-			setPoint(6,Point(cx+scale,cy+scale));
-			setPoint(7,Point(cx+12*scale,cy+scale));
-			setPoint(8,Point(cx+12*scale,cy-scale));
-			setPoint(9,Point(cx+scale,cy-scale));
-			setPoint(10,Point(cx+scale,cy-12*scale));
-			setPoint(11,Point(cx-scale,cy-12*scale));
-			setPoint(12,Point(cx-scale, cy-scale));
+	setPoint(1,Point(cx-12*scale,cy-scale));
+	setPoint(2,Point(cx-12*scale,cy+scale));
+	setPoint(3,Point(cx-scale,cy+scale));
+	setPoint(4,Point(cx-scale,cy+12*scale));
+	setPoint(5,Point(cx+scale,cy+12*scale));
+	setPoint(6,Point(cx+scale,cy+scale));
+	setPoint(7,Point(cx+12*scale,cy+scale));
+	setPoint(8,Point(cx+12*scale,cy-scale));
+	setPoint(9,Point(cx+scale,cy-scale));
+	setPoint(10,Point(cx+scale,cy-12*scale));
+	setPoint(11,Point(cx-scale,cy-12*scale));
+	setPoint(12,Point(cx-scale, cy-scale));
 }
 
 void HeliPropeller::moveByX( int x){
@@ -52,3 +52,4 @@ void HeliPropeller::moveByY( int y){
 	Shape::moveByY(y);
 	center.translate(0,y);
 }
+

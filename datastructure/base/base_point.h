@@ -3,16 +3,16 @@
 
 class BasePoint{
 	private:
-		int x, y;
+		double x, y;
 	public:
 		BasePoint();
-		BasePoint(int, int);
+		BasePoint(double, double);
 		BasePoint(const BasePoint&);
 
-		int getX() const;
-		int getY() const;
-		void setX(int);
-		void setY(int);
+		double getX() const;
+		double getY() const;
+		void setX(double);
+		void setY(double);
 };
 
 #endif

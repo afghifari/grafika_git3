@@ -17,6 +17,7 @@
 #include <thread>
 #include <mutex>
 #include <deque>
+#include <pthread.h>
 
 #include "datastructure/point.h"
 #include "datastructure/line.h"
@@ -165,11 +166,11 @@ void processInput(char chardata){
 			HeliProp->moveByY(10);
 			break;
 		case '[':
-			Heli->rotate(Heli->center, -270);
-			HeliProp->rotate(Heli->center, -270);
+			Heli->rotate(Heli->center, 5);
+			HeliProp->rotate(Heli->center, 5);
 		case ']':
-			Heli->rotate(Heli->center, -90);
-			HeliProp->rotate(Heli->center, -90);
+			Heli->rotate(Heli->center, -2);
+			HeliProp->rotate(Heli->center, -2);
 		default:
 			break;
 	}
@@ -191,6 +192,14 @@ void startKeystrokeThread(){
 	t1.detach();
 }
 
+void *propeller_spin(void *degree){
+	long deg = (long) degree;
+	int deg_cast = (int) deg;
+	while(true){
+		HeliProp->rotate(Heli->center, deg_cast);
+	}
+}
+
 int main(){
 	initAll();
 
@@ -204,13 +213,15 @@ int main(){
 	startKeystrokeThread();
 
 	bool dirty = true;
-	
 	//add helicopter to shape vector
 	sh.push_back(Heli);
 	sh.push_back(HeliProp);
+	pthread_t propeller_spin_thread;
+	int degree = 15;
+	//int prop_spin = pthread_create(&propeller_spin_thread, NULL, propeller_spin, (void *)degree); 
 	
 	while(true){
-		if (dirty) {
+		//if (dirty) {
 			drawer.xTranslate = -viewPortCenter.getX();
 			drawer.yTranslate = -viewPortCenter.getY();
 			drawer.drawScale = scale;
@@ -222,15 +233,15 @@ int main(){
 
 			drawCanvas(&canvas);
 
-			dirty = false;
-		}
+			//dirty = false;
+		//}
 
 		{
 			std::lock_guard<std::mutex> lck(qMutex);
 			while (!keyQueue.empty()) {
 				processInput(keyQueue.front());
 				keyQueue.pop_front();
-				dirty = true;
+				//dirty = true;
 			}
 		}
 

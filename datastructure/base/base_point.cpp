@@ -5,7 +5,7 @@ BasePoint::BasePoint(){
 	y = 0;
 }
 
-BasePoint::BasePoint(int _x, int _y){
+BasePoint::BasePoint(double _x, double _y){
 	x = _x, y = _y;
 }
 
@@ -14,15 +14,15 @@ BasePoint::BasePoint(const BasePoint& BP){
 	y = BP.y;
 }
 
-int BasePoint::getX() const{
+double BasePoint::getX() const{
 	return x;
 }
-int BasePoint::getY() const{
+double BasePoint::getY() const{
 	return y;
 }
-void BasePoint::setX(int _x){
+void BasePoint::setX(double _x){
 	x = _x;
 }
-void BasePoint::setY(int _y){
+void BasePoint::setY(double _y){
 	y = _y;
 }

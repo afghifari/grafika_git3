@@ -1,11 +1,12 @@
 #include "point.h"
 #include <cmath>
+#define PI 3.14159265
 
 Point::Point() : BasePoint(){
 	//do nothing
 }
 
-Point::Point(int _x, int _y) : BasePoint(_x, _y){
+Point::Point(double _x, double _y) : BasePoint(_x, _y){
 	//do nothing
 }
 
@@ -13,40 +14,33 @@ Point::Point(const Point& P) : BasePoint(P){
 	//do nothing
 }
 
-void Point::translate(int deltaX, int deltaY){
+void Point::translate(double deltaX, double deltaY){
 	setX(getX() + deltaX);
 	setY(getY() + deltaY);
 }
 
-void Point::rotate(const Point& P, int degree){
-
-	double deg_in_pi = std::acos(-1) * degree / 180.0;
-	double cosinus = std::cos(deg_in_pi);
-	double sinus = std::sin(deg_in_pi);
-
-	Point temp;
-	temp.setX((int) (cosinus * (getX() - P.getX()) - sinus * (getY() - P.getY())) + P.getX());
-	temp.setY((int) (sinus * (getX() - P.getX()) + cosinus * (getY() - P.getY())) + P.getY());
-
-	setX(temp.getX());
-	setY(temp.getY());
+void Point::rotate(const Point& poros, int theta){
+	double oldX = getX(), oldY = getY();
+	double degree = ((double)theta)* PI/180 ;
+	setX(poros.getX() + ((oldX - poros.getX()) * cos(degree) - (poros.getY() - oldY) * sin(degree)));
+	setY(poros.getY() - ((oldX - poros.getX()) * sin(degree) + (poros.getY() - oldY) * cos(degree)));
 
 }
 
-Point Point::translated(int deltaX, int deltaY){
+Point Point::translated(double deltaX, double deltaY){
 	return Point(getX() + deltaX, getY() + deltaY);
 }
 
 Point Point::scaleUp(const Point& center, double scale){
 	Point P_new;
-	P_new.setX((int)((getX() - center.getX()) * scale) + center.getX());
-	P_new.setY((int)((getY() - center.getY()) * scale) + center.getY());
+	P_new.setX(((getX() - center.getX()) * scale) + center.getX());
+	P_new.setY(((getY() - center.getY()) * scale) + center.getY());
 	return P_new;
 }
 
 Point Point::scaleUp(double scale){
 	Point P_new;
-	P_new.setX((int)(getX() * scale));
-	P_new.setY((int)(getY() * scale));
+	P_new.setX((getX() * scale));
+	P_new.setY((getY() * scale));
 	return P_new;
 }
