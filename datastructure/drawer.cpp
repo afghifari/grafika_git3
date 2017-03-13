@@ -25,11 +25,13 @@ void Drawer::draw_shape(Shape *S){
 		gambarGaris(
 			(S->getPoint(i)).translated(xTranslate, yTranslate).scaleUp(drawScale),
 			(S->getPoint(i+1)).translated(xTranslate, yTranslate).scaleUp(drawScale),
-			drawScale > 1 ? drawScale-1 : 0);
+			drawScale > 1 ? drawScale-1 : 0,
+			S->color
+		);
 	}
 }
 
-void Drawer::gambarGaris(Point P1, Point P2, int tebal) {
+void Drawer::gambarGaris(Point P1, Point P2, int tebal, Color color) {
 	if (!lineInsideRect(P1, P2, 0, 0, xClipWidth, yClipHeight)) return;
 
 	for(int t1 = -tebal; t1 <= tebal; ++t1){
@@ -55,14 +57,14 @@ void Drawer::gambarGaris(Point P1, Point P2, int tebal) {
 				if(yawal > yakhir) std::swap(yawal, yakhir);
 				for(int i = yawal; i <= yakhir; ++i){
 					Point P = Point(xawal, i);
-					gambarPoint(P);
+					gambarPoint(P, color);
 				}
 			}
 			else if (selisihAbsY == 0){
 				if(xawal > xakhir) std::swap(xawal, xakhir);
 				for(int i = xawal; i <= xakhir; ++i){
 					Point P = Point(i, yawal);
-					gambarPoint(P);
+					gambarPoint(P, color);
 				}
 			}
 			else if(selisihAbsY < selisihAbsX){
@@ -74,7 +76,7 @@ void Drawer::gambarGaris(Point P1, Point P2, int tebal) {
 					int ynow = yawal + (deltaY * i) / deltaX + (modY * 2) / deltaX;
 
 					Point P = Point(xawal + i, ynow);
-					gambarPoint(P);
+					gambarPoint(P, color);
 				}
 			}
 			else{
@@ -86,7 +88,7 @@ void Drawer::gambarGaris(Point P1, Point P2, int tebal) {
 					int xnow = xawal + (deltaX * i) / deltaY + (modX * 2) / deltaY;
 
 					Point P = Point(xnow, yawal + i);
-					gambarPoint(P);
+					gambarPoint(P, color);
 				}
 			}
 
@@ -94,14 +96,14 @@ void Drawer::gambarGaris(Point P1, Point P2, int tebal) {
 	}
 }
 
-void Drawer::gambarPoint(const Point& P){
+void Drawer::gambarPoint(const Point& P, Color color){
 	int x = P.getX();
 	int xd = x + xOffset;
 	int y = P.getY();
 	int yd = y + yOffset;
 	bool performDraw = x >= 0 && y >= 0 && x < xClipWidth && y < yClipHeight;
 	if (performDraw) {
-		destination->setPixel(xd, yd, Color(0, 0, 200));
+		destination->setPixel(xd, yd, color);
 	}
 
 }

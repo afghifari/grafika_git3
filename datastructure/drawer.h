@@ -15,8 +15,8 @@ public:
   Drawer(Canvas* c);
   void draw_shapes(std::vector<Shape*> shapes);
   void draw_shape(Shape*);
-  void gambarGaris(Point, Point, int);
-  void gambarPoint(const Point&);
+  void gambarGaris(Point, Point, int, Color);
+  void gambarPoint(const Point&, Color);
 
   // Where to draw the pixels to the screen, and how much to draw
   int xOffset;

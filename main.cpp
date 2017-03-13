@@ -220,8 +220,8 @@ int main(){
 			}
 		}
 
-		// About 30 fps
-		usleep(33000);
+		// About 60 fps
+		usleep(16000);
 	}
 
 	return 0;

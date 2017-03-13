@@ -31,6 +31,8 @@ void read_file_bangunan(std::vector<Shape*>& bangunan, std::vector<Shape*>& bang
 		Point P_besar = Sh_besar->getPoint(0);
 		Sh_besar->setPoint(n, P_besar);
 
+		Sh->color = Color(0, 255, 0);
+
 		bangunan.push_back(Sh);
 		bangunan_besar.push_back(Sh_besar);
 	}
@@ -59,6 +61,9 @@ void read_file_jalan(std::vector<Shape*>& jalan, std::vector<Shape*>& jalan_besa
 			Sh->setPoint(i, P);
 			Sh_besar->setPoint(i, P_besar);
 		}
+
+		Sh->color = Color(255, 255, 0);
+
 		jalan.push_back(Sh);
 		jalan_besar.push_back(Sh_besar);
 	}
@@ -108,6 +113,8 @@ void read_file_pohon(std::vector<Shape*>& pohon, std::vector<Shape*>& pohon_besa
 			}
 			Sh->setPoint(total_titik, Sh->getPoint(0));
 			Sh_besar->setPoint(total_titik, Sh_besar->getPoint(0));
+
+			Sh->color = Color(0, 255, 255);
 
 			pohon.push_back(Sh);
 			pohon_besar.push_back(Sh_besar);

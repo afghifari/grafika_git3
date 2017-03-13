@@ -1,6 +1,7 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
+#include "color.h"
 #include "point.h"
 
 class Shape{
@@ -23,6 +24,8 @@ public:
 	void setPoint(int, Point);
 
 	//virtual void flood_fill();
+
+	Color color;
 };
 
 // Utility functions

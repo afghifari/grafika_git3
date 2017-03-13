@@ -1,6 +1,6 @@
 #include "shape.h"
 
-Shape::Shape(int _size){
+Shape::Shape(int _size) : color(255, 255, 255) {
 	size = _size;
 	P = new Point[size];
 	for(int i = 0;i < size; ++i){
@@ -8,7 +8,7 @@ Shape::Shape(int _size){
 	}
 }
 
-Shape::Shape(int _size, Point* _P){
+Shape::Shape(int _size, Point* _P) : color(255, 255, 255) {
 	size = _size;
 	P = new Point[size];
 
@@ -21,7 +21,7 @@ Shape::~Shape(){
 	delete [] P;
 }
 
-Shape::Shape(const Shape& S){
+Shape::Shape(const Shape& S) : color(255, 255, 255) {
 
 	size = S.size;
 	P = new Point[size];
@@ -40,6 +40,8 @@ Shape& Shape::operator=(const Shape& S){
 	for(int i = 0;i < size; ++i){
 		P[i] = Point(S.P[i]);
 	}
+
+	color = S.color;
 
 	return *this;
 }
