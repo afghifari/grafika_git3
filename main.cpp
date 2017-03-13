@@ -26,6 +26,7 @@
 #include "datastructure/drawer.h"
 #include "datastructure/itbmap.h"
 #include "datastructure/helicopter.h"
+#include "datastructure/heli_propeller.h"
 
 using namespace std;
 
@@ -193,11 +194,12 @@ int main(){
 			drawer.drawScale = scale;
 
 			canvas.clear_all();
-
-			Helicopter *H = new Helicopter(Point(500,300),15);
+			Helicopter *H = new Helicopter(Point(500,300),5);
+			HeliPropeller *HP = new HeliPropeller(Point(500,300),5);
 			
 			std::vector<Shape*> sh;
 			sh.push_back(H);
+			sh.push_back(HP);
 			
 			drawer.draw_shapes(sh);
 
