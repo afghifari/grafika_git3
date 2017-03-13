@@ -2,10 +2,10 @@
 
 Canvas::Canvas() {
 	bitmap = new Color[MAX_CANVAS_WIDTH * MAX_CANVAS_HEIGHT];
-	int xStart = 0;
-	int xEnd = MAX_CANVAS_WIDTH;
-	int yStart = 0;
-	int yEnd = MAX_CANVAS_HEIGHT;
+	xStart = 0;
+	xEnd = MAX_CANVAS_WIDTH;
+	yStart = 0;
+	yEnd = MAX_CANVAS_HEIGHT;
 	clear_all();
 }
 
