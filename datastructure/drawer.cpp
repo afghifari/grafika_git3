@@ -31,6 +31,63 @@ void Drawer::draw_shape(Shape *S){
 	}
 }
 
+
+void Drawer::draw_circles(std::vector<Circle*> circles) {
+	for (size_t i = 0; i < circles.size(); i++) {
+		draw_circle(circles[i]);
+	}
+}
+
+void Drawer::draw_circle(Circle* C) {
+	int d, p, q;
+
+    p = 0;
+    q = C->getRadius();
+    d = 3 - 2*C->getRadius();
+
+    drawEightPoint(C->getCenter(), p, q,C->color);
+
+    while (p < q) {
+        p++;
+        if (d<0) {
+            d = d + 4*p + 6;
+        }
+        else {
+            q--;
+            d = d + 4*(p-q) + 10;
+        }
+
+        drawEightPoint(C->getCenter(), p, q,C->color);
+    }
+}
+
+void Drawer::drawEightPoint(Point P, int p, int q, Color C) {
+	Point temp;
+	temp.setX(P.getX()+p); temp.setY(P.getY()+q);
+	gambarGaris(P,temp,1,C);
+
+	temp.setX(P.getX()-p); temp.setY(P.getY()+q);
+	gambarGaris(P,temp,1,C);
+	
+	temp.setX(P.getX()+p); temp.setY(P.getY()-q);
+	gambarGaris(P,temp,1,C);
+	
+	temp.setX(P.getX()-p); temp.setY(P.getY()-q);
+	gambarGaris(P,temp,1,C);
+
+	temp.setX(P.getX()+q); temp.setY(P.getY()+p);
+	gambarGaris(P,temp,1,C);
+
+	temp.setX(P.getX()-q); temp.setY(P.getY()+p);
+	gambarGaris(P,temp,1,C);
+	
+	temp.setX(P.getX()+q); temp.setY(P.getY()-p);
+	gambarGaris(P,temp,1,C);
+	
+	temp.setX(P.getX()-q); temp.setY(P.getY()-p);
+	gambarGaris(P,temp,1,C);
+}
+
 void Drawer::gambarGaris(Point P1, Point P2, int tebal, Color color) {
 	if (!lineInsideRect(P1, P2, 0, 0, xClipWidth, yClipHeight)) return;
 
