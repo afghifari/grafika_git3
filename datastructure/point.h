@@ -13,6 +13,7 @@ class Point : public BasePoint{
 		void rotate(const Point&, int);
 		Point translated(double, double);
 		Point scaleUp(const Point&,double);
+		void grow(const Point&,double);
 		Point scaleUp(double);
 };
 

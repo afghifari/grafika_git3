@@ -38,6 +38,11 @@ Point Point::scaleUp(const Point& center, double scale){
 	return P_new;
 }
 
+void Point::grow(const Point& center, double scale){
+	setX(((getX() - center.getX()) * scale) + center.getX());
+	setY(((getY() - center.getY()) * scale) + center.getY());
+}
+
 Point Point::scaleUp(double scale){
 	Point P_new;
 	P_new.setX((getX() * scale));

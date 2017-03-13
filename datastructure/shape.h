@@ -23,6 +23,7 @@ public:
 	void setAllPoint(Point*);
 	void setPoint(int, Point);
 	void rotate(const Point& basePoint, int degree); 
+	void scaleUp(const Point& basePoint, double scale);
 	virtual void moveByX(int x);
 	virtual void moveByY(int y);
 

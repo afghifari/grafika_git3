@@ -28,6 +28,7 @@
 #include "datastructure/itbmap.h"
 #include "datastructure/helicopter.h"
 #include "datastructure/heli_propeller.h"
+#include "datastructure/explosion.h"
 
 using namespace std;
 
@@ -41,6 +42,7 @@ char *fbp = 0;
 Point viewPortCenter(0,0);
 Helicopter *Heli = new Helicopter(Point(500,300),5);
 HeliPropeller *HeliProp = new HeliPropeller(Point(500,300),5);
+Explosion *Bomb = new Explosion(Point(500,300),1);
 
 std::vector<Shape*> sh;
 int scale = 1;
@@ -201,6 +203,17 @@ void *propeller_spin(void *degree){
 	}
 }
 
+void *explode(void *max_size){
+	double i = Bomb->scale;
+	long max = (long) max_size;
+	int n = (int) max;
+	while (i<n) {
+		Bomb->scaleUp(Bomb->center, i);
+		usleep(16000);
+		i += 0.002;
+	}
+}
+
 int main(){
 	initAll();
 
@@ -214,12 +227,17 @@ int main(){
 	startKeystrokeThread();
 
 	bool dirty = true;
+	sh.push_back(Bomb); 
 	//add helicopter to shape vector
 	sh.push_back(Heli);
 	sh.push_back(HeliProp);
 	pthread_t propeller_spin_thread;
+	pthread_t radius_explosion_thread;
 	int degree = 15;
-	int prop_spin = pthread_create(&propeller_spin_thread, NULL, propeller_spin, (void *)degree); 
+	int max_size = 5;
+	int prop_spin = pthread_create(&propeller_spin_thread, NULL, propeller_spin, (void *)degree);
+	int radius_explosion = pthread_create(&radius_explosion_thread, NULL, explode, (void *)max_size);
+	
 	
 	while(true){
 		//if (dirty) {

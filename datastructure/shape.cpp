@@ -73,6 +73,12 @@ void Shape::rotate(const Point& basePoint, int degree){
 	}
 }
 
+void Shape::scaleUp(const Point& basePoint, double scale){
+	for(int i=0; i < size; i++){
+		P[i].grow(basePoint, scale);
+	}
+}
+
 void Shape::moveByX(int x){
 	for(int i=0; i < size; i++){
 		P[i].translate(x,0);
