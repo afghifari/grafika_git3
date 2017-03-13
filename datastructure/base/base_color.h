@@ -7,7 +7,7 @@ private:
 public:
 	BaseColor();
 	BaseColor(int,int,int);
-	
+
 	int getR() const;
 	int getG() const;
 	int getB() const;

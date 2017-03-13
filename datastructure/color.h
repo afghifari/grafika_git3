@@ -6,7 +6,10 @@
 class Color : public BaseColor{
 public:
 	Color();
-	Color(int,int,int);	
+	Color(int,int,int);
+
+	bool operator==(const Color&) const;
+	bool operator!=(const Color&) const;
 };
 
 #endif
