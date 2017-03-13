@@ -24,6 +24,16 @@ class Canvas {
 
 		Color transparent;
 
+		/**
+		* boundary_fill berfungsi untuk mewarnai objek dari dalam. seperti flood fill
+		*	x : kordinat x
+		*	y : kordinat y
+		*	new_color 	: warna buat fill objek
+		*	f_color		: warna garis objek (polygon)
+		*	b_color		: warna dalam objek sebelum diwarnai. warna backgroundnya.
+		*/
+		void boundary_fill (int x, int y, Color new_color, Color f_color, Color b_color);
+
 		static void mergeCanvas(Canvas* destination, std::vector<Canvas*> layers);
 
 		int xStart;
