@@ -3,6 +3,8 @@
 Helicopter::Helicopter(Point _P) : Shape(13) {
 	int cx = _P.getX();
 	int cy = _P.getY();
+	center.setX(cx);
+	center.setY(cy);
 	scale = 5;
 	setPoint(0,Point(cx-4*scale,cy-2*scale));
 			setPoint(1,Point(cx-scale,cy-6*scale));
@@ -22,6 +24,8 @@ Helicopter::Helicopter(Point _P) : Shape(13) {
 Helicopter::Helicopter(Point _P,int _scale): Shape(13) {
 	int cx = _P.getX();
 	int cy = _P.getY();
+	center.setX(cx);
+	center.setY(cy);
 	scale = _scale;
 	setPoint(0,Point(cx-4*scale,cy-2*scale));
 			setPoint(1,Point(cx-scale,cy-6*scale));
@@ -36,4 +40,14 @@ Helicopter::Helicopter(Point _P,int _scale): Shape(13) {
 			setPoint(10,Point(cx-scale,cy+5*scale));
 			setPoint(11,Point(cx-4*scale,cy+2*scale));
 			setPoint(12,Point(cx-4*scale, cy-2*scale));
+}
+
+void Helicopter::moveByX(int x){
+	Shape::moveByX(x);
+	center.translate(x,0);
+}
+
+void Helicopter::moveByY( int y){
+	Shape::moveByY(y);
+	center.translate(0,y);
 }

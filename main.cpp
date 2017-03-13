@@ -38,6 +38,10 @@ struct fb_var_screeninfo vinfo;
 struct fb_fix_screeninfo finfo;
 char *fbp = 0;
 Point viewPortCenter(0,0);
+Helicopter *Heli = new Helicopter(Point(500,300),5);
+HeliPropeller *HeliProp = new HeliPropeller(Point(500,300),5);
+
+std::vector<Shape*> sh;
 int scale = 1;
 
 bool b, j, p;
@@ -141,17 +145,31 @@ void processInput(char chardata){
 		case ' ':
 			break;
 		case 'w':
-			viewPortCenter.setY(viewPortCenter.getY() - 10);
+			//viewPortCenter.setY(viewPortCenter.getY() - 10);
+			Heli->moveByY(-10);
+			HeliProp->moveByY(-10);
 			break;
 		case 'a':
-			viewPortCenter.setX(viewPortCenter.getX() - 10);
+			//viewPortCenter.setX(viewPortCenter.getX() - 10);
+			Heli->moveByX(-10);
+			HeliProp->moveByX(-10);
 			break;
 		case 'd':
-			viewPortCenter.setX(viewPortCenter.getX() + 10);
+			//viewPortCenter.setX(viewPortCenter.getX() + 10);
+			Heli->moveByX(10);
+			HeliProp->moveByX(10);			
 			break;
 		case 's':
-			viewPortCenter.setY(viewPortCenter.getY() + 10);
+			//viewPortCenter.setY(viewPortCenter.getY() + 10);
+			Heli->moveByY(10);
+			HeliProp->moveByY(10);
 			break;
+		case '[':
+			Heli->rotate(Heli->center, -270);
+			HeliProp->rotate(Heli->center, -270);
+		case ']':
+			Heli->rotate(Heli->center, -90);
+			HeliProp->rotate(Heli->center, -90);
 		default:
 			break;
 	}
@@ -186,7 +204,11 @@ int main(){
 	startKeystrokeThread();
 
 	bool dirty = true;
-
+	
+	//add helicopter to shape vector
+	sh.push_back(Heli);
+	sh.push_back(HeliProp);
+	
 	while(true){
 		if (dirty) {
 			drawer.xTranslate = -viewPortCenter.getX();
@@ -194,12 +216,7 @@ int main(){
 			drawer.drawScale = scale;
 
 			canvas.clear_all();
-			Helicopter *H = new Helicopter(Point(500,300),5);
-			HeliPropeller *HP = new HeliPropeller(Point(500,300),5);
-			
-			std::vector<Shape*> sh;
-			sh.push_back(H);
-			sh.push_back(HP);
+
 			
 			drawer.draw_shapes(sh);
 

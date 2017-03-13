@@ -7,6 +7,9 @@ class HeliPropeller: public Shape {
 		HeliPropeller(Point);
 		HeliPropeller(Point, int);
 		int scale;
+		Point center;
+		void moveByX( int x);
+		void moveByY(int y);
 };
 
 #endif

@@ -7,6 +7,9 @@ class Helicopter: public Shape {
 		Helicopter(Point);
 		Helicopter(Point, int);
 		int scale;
+		Point center;
+		void moveByX(int x);
+		void moveByY(int y);
 };
 
 #endif

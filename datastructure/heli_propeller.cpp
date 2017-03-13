@@ -3,6 +3,9 @@
 HeliPropeller::HeliPropeller(Point _P) : Shape(13) {
 	int cx = _P.getX();
 	int cy = _P.getY();
+	center.setX(cx);
+	center.setY(cy);
+	
 	scale = 5;
 	setPoint(0,Point(cx-scale,cy-scale));
 			setPoint(1,Point(cx-12*scale,cy-scale));
@@ -22,6 +25,8 @@ HeliPropeller::HeliPropeller(Point _P) : Shape(13) {
 HeliPropeller::HeliPropeller(Point _P,int _scale): Shape(13) {
 	int cx = _P.getX();
 	int cy = _P.getY();
+	center.setX(cx);
+	center.setY(cy);
 	scale = 5;
 	setPoint(0,Point(cx-scale,cy-scale));
 			setPoint(1,Point(cx-12*scale,cy-scale));
@@ -36,4 +41,14 @@ HeliPropeller::HeliPropeller(Point _P,int _scale): Shape(13) {
 			setPoint(10,Point(cx+scale,cy-12*scale));
 			setPoint(11,Point(cx-scale,cy-12*scale));
 			setPoint(12,Point(cx-scale, cy-scale));
+}
+
+void HeliPropeller::moveByX( int x){
+	Shape::moveByX(x);
+	center.translate(x,0);
+}
+
+void HeliPropeller::moveByY( int y){
+	Shape::moveByY(y);
+	center.translate(0,y);
 }
