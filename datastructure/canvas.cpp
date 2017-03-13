@@ -2,6 +2,11 @@
 
 Canvas::Canvas() {
 	bitmap = new Color[MAX_CANVAS_WIDTH * MAX_CANVAS_HEIGHT];
+	int xStart = 0;
+	int xEnd = MAX_CANVAS_WIDTH;
+	int yStart = 0;
+	int yEnd = MAX_CANVAS_HEIGHT;
+	clear_all();
 }
 
 Canvas::~Canvas() {
@@ -19,9 +24,23 @@ void Canvas::setPixel(int x, int y, Color c) {
 }
 
 void Canvas::clear_all(){
-	for(int j = 0;j < MAX_CANVAS_HEIGHT; ++j){
-		for(int i = 0;i < MAX_CANVAS_WIDTH; ++i){
-			setPixel(i, j, Color(0,0,0));
+	for(int j = yStart; j < yEnd; ++j){
+		for(int i = xStart;i < xEnd; ++i){
+			setPixel(i, j, transparent);
+		}
+	}
+}
+
+void Canvas::mergeCanvas(Canvas* destination, std::vector<Canvas*> layers) {
+	for (size_t i = 0; i < layers.size(); i++) {
+		Canvas* layer = layers[i];
+		for(int y = layer->yStart; y < layer->yEnd; ++y){
+			for(int x = layer->xStart; x < layer->xEnd; ++x){
+				Color cpx = layer->getPixel(x, y);
+				if (i == 0 || cpx != layer->transparent) {
+					destination->setPixel(x, y, cpx);
+				}
+			}
 		}
 	}
 }

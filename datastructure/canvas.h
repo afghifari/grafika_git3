@@ -22,6 +22,15 @@ class Canvas {
 
 		void clear_all();
 
+		Color transparent;
+
+		static void mergeCanvas(Canvas* destination, std::vector<Canvas*> layers);
+
+		int xStart;
+		int xEnd;
+		int yStart;
+		int yEnd;
+
 	private:
 		Color* bitmap;
 };
