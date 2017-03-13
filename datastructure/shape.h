@@ -22,6 +22,9 @@ public:
 
 	void setAllPoint(Point*);
 	void setPoint(int, Point);
+	void rotate(const Point& basePoint, int degree); 
+	void moveByX(int x);
+	void moveByY(int y);
 
 	//virtual void flood_fill();
 

@@ -67,6 +67,24 @@ void Shape::setPoint(int idx, Point _P){
 	P[idx] = _P;
 }
 
+void Shape::rotate(const Point& basePoint, int degree){
+	for(int i=0; i < size; i++){
+		P[i].rotate(basePoint, degree);
+	}
+}
+
+void Shape::moveByX(int x){
+	for(int i=0; i < size; i++){
+		P[i].translate(x,0);
+	}
+}
+
+void Shape::moveByY(int y){
+	for(int i=0; i < size; i++){
+		P[i].translate(0,y);
+	}
+}
+
 bool lineIntersect(Point a1, Point a2, Point b1, Point b2) {
 	// Based on https://stackoverflow.com/a/1968345/3816975
 	float s1_x, s1_y, s2_x, s2_y;
