@@ -100,6 +100,7 @@ void Drawer::drawEightPoint(Point P, int p, int q, Color C) {
 	gambarGaris(P,temp,1,C);
 }
 
+/*
 void Drawer::gambarGaris(Point P1, Point P2, int tebal, Color color) {
 	if (!lineInsideRect(P1, P2, 0, 0, xClipWidth, yClipHeight)) return;
 

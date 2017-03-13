@@ -167,10 +167,10 @@ void processInput(char chardata){
 			break;
 		case '[':
 			Heli->rotate(Heli->center, 5);
-			HeliProp->rotate(Heli->center, 5);
+			break;
 		case ']':
-			Heli->rotate(Heli->center, -2);
-			HeliProp->rotate(Heli->center, -2);
+			Heli->rotate(Heli->center, -5);
+			break;
 		default:
 			break;
 	}
@@ -196,7 +196,8 @@ void *propeller_spin(void *degree){
 	long deg = (long) degree;
 	int deg_cast = (int) deg;
 	while(true){
-		HeliProp->rotate(Heli->center, deg_cast);
+		HeliProp->rotate(HeliProp->center, deg_cast);
+		usleep(16000);
 	}
 }
 
@@ -218,7 +219,7 @@ int main(){
 	sh.push_back(HeliProp);
 	pthread_t propeller_spin_thread;
 	int degree = 15;
-	//int prop_spin = pthread_create(&propeller_spin_thread, NULL, propeller_spin, (void *)degree); 
+	int prop_spin = pthread_create(&propeller_spin_thread, NULL, propeller_spin, (void *)degree); 
 	
 	while(true){
 		//if (dirty) {
