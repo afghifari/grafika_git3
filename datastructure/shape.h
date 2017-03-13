@@ -28,4 +28,9 @@ public:
 	Color color;
 };
 
+// Utility functions
+bool lineIntersect(Point a1, Point a2, Point b1, Point b2);
+bool lineInsideRect(Point a1, Point a2, int x, int y, int w, int h);
+bool pointInsideRect(Point p, int x, int y, int w, int h);
+
 #endif
