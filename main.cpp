@@ -25,6 +25,7 @@
 #include "datastructure/canvas.h"
 #include "datastructure/drawer.h"
 #include "datastructure/itbmap.h"
+#include "datastructure/helicopter.h"
 
 using namespace std;
 
@@ -175,19 +176,11 @@ int main(){
 	initAll();
 
 	Canvas canvas;
-	ITBMap itbMap("src/bangunanitb.txt","src/potato","src/tree.txt");
 	Drawer drawer(&canvas);
-	Drawer drawerZoom(&canvas);
 
 	drawer.xClipWidth = 600;
 	drawer.yClipHeight = 600;
-
-
-	drawerZoom.xOffset = 600;
-	drawerZoom.xClipWidth = 200;
-	drawerZoom.yClipHeight = 200;
-	drawerZoom.drawScale = 0.33;
-
+	
 	b = true, p = true, j = true;
 	startKeystrokeThread();
 
@@ -199,12 +192,14 @@ int main(){
 			drawer.yTranslate = -viewPortCenter.getY();
 			drawer.drawScale = scale;
 
-			itbMap.setArg(p, b, j);
-
 			canvas.clear_all();
 
-			drawer.draw_shapes(itbMap.get_all_drawn_shapes());
-			drawerZoom.draw_shapes(itbMap.get_all_drawn_shapes());
+			Helicopter *H = new Helicopter(Point(500,300),15);
+			
+			std::vector<Shape*> sh;
+			sh.push_back(H);
+			
+			drawer.draw_shapes(sh);
 
 			drawCanvas(&canvas);
 
