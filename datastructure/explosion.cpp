@@ -19,7 +19,7 @@ Explosion::Explosion(Point _P) : Shape(13) {
 			setPoint(5,Point(cx-6*scale,cy+8*scale));
 			setPoint(6,Point(cx,cy+12*scale));
 			setPoint(7,Point(cx+6*scale,cy+8*scale));
-			setPoint(8,Point(cx+12*scale,cy+12*scale));
+			setPoint(8,Point(cx+12*scale,cy+4*scale));
 			setPoint(9,Point(cx+6*scale,cy));
 			setPoint(10,Point(cx+12*scale,cy-4*scale));
 			setPoint(11,Point(cx+6*scale,cy-8*scale));
