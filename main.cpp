@@ -29,6 +29,7 @@
 #include "datastructure/helicopter.h"
 #include "datastructure/heli_propeller.h"
 #include "datastructure/explosion.h"
+#include "datastructure/credit.h"
 
 using namespace std;
 
@@ -213,6 +214,7 @@ int main(){
 	Canvas propCanvas;
 	Canvas holeCanvas;
 	Canvas explosionCanvas;
+	Canvas creditCanvas;
 
 	std::vector<Canvas*> canvases;
 	canvases.push_back(&mapCanvas);
@@ -350,6 +352,19 @@ int main(){
 		// About 60 fps
 		usleep(16000);
 	}
+
+	Credit lastCredit("datastructure/credit/credit.bmp");
+
+	int i,j;
+	for (i=0;i<lastCredit.getHeight();i++) {
+		for (j=0;j<lastCredit.getWidth();j++) {
+			creditCanvas.setPixel(i,j,new Color(lastCredit.getData()[j * lastCredit.getWidth() + i], 
+												lastCredit.getData()[j * lastCredit.getWidth() + i + 1],
+												lastCredit.getData()[j * lastCredit.getWidth() + i + 2]));
+		}
+	}
+
+	drawCanvas(&creditCanvas);
 
 	printf("Selamat, anda telah menghancurkan ITB!\n");
 
