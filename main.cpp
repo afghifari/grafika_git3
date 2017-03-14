@@ -39,15 +39,17 @@ long int location = 0;
 struct fb_var_screeninfo vinfo;
 struct fb_fix_screeninfo finfo;
 char *fbp = 0;
-Point viewPortCenter(0,0);
-Helicopter *Heli = new Helicopter(Point(500,300),5);
-HeliPropeller *HeliProp = new HeliPropeller(Point(500,300),5);
-Explosion *Bomb = new Explosion(Point(500,300),1);
+Helicopter *Heli = new Helicopter(Point(300,300),5);
+HeliPropeller *HeliProp = new HeliPropeller(Point(300,300),5);
+std::vector<Circle*> holes;
+std::vector<Explosion*> explosions;
 
-std::vector<Shape*> sh;
 int scale = 1;
 
 bool b, j, p;
+
+bool heliMoved = true;
+bool holeNewlyAdded = true;
 
 std::mutex qMutex;
 std::deque<char> keyQueue;
@@ -126,6 +128,8 @@ int getch(void) {
 }
 
 void processInput(char chardata){
+	Circle* hole;
+	Explosion* explosion;
 	switch(chardata){
 		case 'x':
 			terminate();
@@ -145,27 +149,32 @@ void processInput(char chardata){
 		case 'b':
 			b ^= 1;
 			break;
-		case ' ':
+		case 'e':
+			hole = new Circle(100, Heli->center);
+			explosion = new Explosion(Heli->center);
+			hole->color = Color(20, 20, 20);
+			holes.push_back(hole);
+			explosions.push_back(explosion);
 			break;
 		case 'w':
-			//viewPortCenter.setY(viewPortCenter.getY() - 10);
 			Heli->moveByY(-10);
 			HeliProp->moveByY(-10);
+			heliMoved = true;
 			break;
 		case 'a':
-			//viewPortCenter.setX(viewPortCenter.getX() - 10);
 			Heli->moveByX(-10);
 			HeliProp->moveByX(-10);
+			heliMoved = true;
 			break;
 		case 'd':
-			//viewPortCenter.setX(viewPortCenter.getX() + 10);
 			Heli->moveByX(10);
 			HeliProp->moveByX(10);
+			heliMoved = true;
 			break;
 		case 's':
-			//viewPortCenter.setY(viewPortCenter.getY() + 10);
 			Heli->moveByY(10);
 			HeliProp->moveByY(10);
+			heliMoved = true;
 			break;
 		case '[':
 			Heli->rotate(Heli->center, 5);
@@ -198,37 +207,131 @@ int main(){
 	initAll();
 
 	Canvas canvas;
-	Drawer drawer(&canvas);
 
-	drawer.xClipWidth = 600;
-	drawer.yClipHeight = 600;
+	Canvas mapCanvas;
+	Canvas heliCanvas;
+	Canvas propCanvas;
+	Canvas holeCanvas;
+	Canvas explosionCanvas;
+
+	std::vector<Canvas*> canvases;
+	canvases.push_back(&mapCanvas);
+	canvases.push_back(&holeCanvas);
+	canvases.push_back(&explosionCanvas);
+	canvases.push_back(&heliCanvas);
+	canvases.push_back(&propCanvas);
+
+	Drawer mainDrawer(&canvas);
+	mainDrawer.xClipWidth = 600;
+	mainDrawer.yClipHeight = 600;
+
+	Drawer helicamDrawer(&canvas);
+	helicamDrawer.xOffset = 600;
+	helicamDrawer.xClipWidth = 200;
+	helicamDrawer.yClipHeight = 200;
+	helicamDrawer.drawScale = 2;
+
+	Drawer mapMainDrawer(mainDrawer);
+	mapMainDrawer.destination = &mapCanvas;
+	Drawer mapHelicamDrawer(helicamDrawer);
+	mapHelicamDrawer.destination = &mapCanvas;
+
+	Drawer holeMainDrawer(mainDrawer);
+	holeMainDrawer.destination = &holeCanvas;
+	Drawer holeHelicamDrawer(helicamDrawer);
+	holeHelicamDrawer.destination = &holeCanvas;
+
+	Drawer explosionDrawer(mainDrawer);
+	explosionDrawer.destination = &explosionCanvas;
+
+	Drawer heliDrawer(mainDrawer);
+	heliDrawer.destination = &heliCanvas;
+	Drawer propDrawer(mainDrawer);
+	propDrawer.destination = &propCanvas;
+
+	ITBMap itbMap("src/bangunanitb.txt","src/potato","src/tree.txt");
 
 	b = true, p = true, j = true;
 	startKeystrokeThread();
 
 	bool dirty = true;
-	sh.push_back(Bomb);
-	//add helicopter to shape vector
-	sh.push_back(Heli);
-	sh.push_back(HeliProp);
-	pthread_t propeller_spin_thread;
-	pthread_t radius_explosion_thread;
-	int degree = 15;
-	int max_size = 5;
+	bool loopdone = false;
 
-
-	while(true){
+	while(!loopdone){
 		//if (dirty) {
-		drawer.xTranslate = -viewPortCenter.getX();
-		drawer.yTranslate = -viewPortCenter.getY();
-		drawer.drawScale = scale;
+		mapHelicamDrawer.xTranslate = -(Heli->center.getX()-100);
+		mapHelicamDrawer.yTranslate = -(Heli->center.getY()-100);
+		holeHelicamDrawer.xTranslate = -(Heli->center.getX()-100);
+		holeHelicamDrawer.yTranslate = -(Heli->center.getY()-100);
 
-		canvas.clear_all();
-
-		drawer.draw_shapes(sh);
-
-		Bomb->animate();
 		HeliProp->animate();
+
+		// Map rendering
+		mapCanvas.clear_all();
+		mapMainDrawer.draw_shapes(itbMap.get_all_drawn_shapes());
+		mapHelicamDrawer.draw_shapes(itbMap.get_all_drawn_shapes());
+
+		// Hole rendering
+		holeCanvas.clear_all();
+		holeMainDrawer.draw_circles(holes);
+		holeHelicamDrawer.draw_circles(holes);
+
+		// Explosion rendering
+		explosionCanvas.clear_all();
+		std::vector<Explosion*> newExplosions;
+		for (size_t i = 0; i < explosions.size(); i++) {
+			Explosion* e = explosions[i];
+			bool drawn = !e->animate();
+			if (drawn) {
+				explosionDrawer.draw_shape(e);
+				// explosionCanvas.boundary_fill(
+				// 	e->center.getX(),
+				// 	e->center.getY(),
+				// 	e->color,
+				// 	explosionCanvas.transparent
+				// );
+
+				newExplosions.push_back(e);
+			} else {
+				delete e;
+				if (holes.size() > 5) {
+					loopdone = true;
+				}
+			}
+		}
+		explosions = newExplosions;
+
+		// Helicopter rendering
+		Point heliCenter = Heli->center;
+		heliCanvas.xStart = heliCenter.getX()-200;
+		heliCanvas.yStart = heliCenter.getY()-200;
+		heliCanvas.xEnd = heliCenter.getX()+200;
+		heliCanvas.yEnd = heliCenter.getY()+200;
+		propCanvas.xStart = heliCenter.getX()-150;
+		propCanvas.yStart = heliCenter.getY()-150;
+		propCanvas.xEnd = heliCenter.getX()+150;
+		propCanvas.yEnd = heliCenter.getY()+150;
+
+		heliCanvas.clear_all();
+		heliDrawer.draw_shape(Heli);
+		heliCanvas.boundary_fill(
+			Heli->center.getX(),
+			Heli->center.getY(),
+			Color(120, 120, 120),
+			heliCanvas.transparent
+		);
+
+		propCanvas.clear_all();
+		propDrawer.draw_shape(HeliProp);
+		propCanvas.boundary_fill(
+			HeliProp->center.getX(),
+			HeliProp->center.getY(),
+			Color(180, 180, 180),
+			propCanvas.transparent
+		);
+
+
+		Canvas::mergeCanvas(&canvas, canvases);
 
 		drawCanvas(&canvas);
 
@@ -247,6 +350,8 @@ int main(){
 		// About 60 fps
 		usleep(16000);
 	}
+
+	printf("Selamat, anda telah menghancurkan ITB!\n");
 
 	return 0;
 }

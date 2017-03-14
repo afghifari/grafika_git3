@@ -3,9 +3,11 @@
 Explosion::Explosion(Point _P) : Shape(13) {
 	int cx = _P.getX();
 	int cy = _P.getY();
-	scale = 5;
+	scale = 1;
 	center.setX(cx);
 	center.setY(cy);
+
+	color = Color(255, 125, 0);
 
 	animProgress = 0;
 
@@ -30,6 +32,9 @@ Explosion::Explosion(Point _P,int _scale): Shape(13) {
 	scale = _scale;
 	center.setX(cx);
 	center.setY(cy);
+
+	color = Color(255, 125, 0);
+
 	setPoint(0,Point(cx, cy-12*scale));
 			setPoint(1,Point(cx-4*scale,cy-8*scale));
 			setPoint(2,Point(cx-12*scale,cy-4*scale));
@@ -57,7 +62,7 @@ void Explosion::moveByY( int y){
 
 bool Explosion::animate() {
 	if (animProgress < 10) {
-		scaleUp(center, 1.5);
+		scaleUp(center, 1.2);
 		animProgress++;
 		return false;
 	} else {

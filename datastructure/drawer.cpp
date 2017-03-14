@@ -16,7 +16,7 @@ Drawer::Drawer(Canvas* c) {
   xTranslate = 0;
   yTranslate = 0;
   drawScale = 1;
-  
+
   xl = 0;
 	yl = 0;
 
@@ -50,7 +50,11 @@ void Drawer::draw_circles(std::vector<Circle*> circles) {
 	}
 }
 
-void Drawer::draw_circle(Circle* C) {
+void Drawer::draw_circle(Circle* IC) {
+	Circle Cl(IC->getRadius()*drawScale, IC->getCenter().translated(xTranslate, yTranslate).scaleUp(drawScale));
+	Cl.color = IC->color;
+
+	Circle* C = &Cl;
 	int d, p, q;
 
     p = 0;
@@ -80,10 +84,10 @@ void Drawer::drawEightPoint(Point P, int p, int q, Color C) {
 
 	temp.setX(P.getX()-p); temp.setY(P.getY()+q);
 	gambarGaris(P,temp,1,C);
-	
+
 	temp.setX(P.getX()+p); temp.setY(P.getY()-q);
 	gambarGaris(P,temp,1,C);
-	
+
 	temp.setX(P.getX()-p); temp.setY(P.getY()-q);
 	gambarGaris(P,temp,1,C);
 
@@ -92,10 +96,10 @@ void Drawer::drawEightPoint(Point P, int p, int q, Color C) {
 
 	temp.setX(P.getX()-q); temp.setY(P.getY()+p);
 	gambarGaris(P,temp,1,C);
-	
+
 	temp.setX(P.getX()+q); temp.setY(P.getY()-p);
 	gambarGaris(P,temp,1,C);
-	
+
 	temp.setX(P.getX()-q); temp.setY(P.getY()-p);
 	gambarGaris(P,temp,1,C);
 }
@@ -193,7 +197,7 @@ int Drawer::getcode(Point P){
 
 
 int Drawer::getcode(double x, double y){
-	
+
 	int code = 0;
 	//Perform Bitwise OR to get outcode
 	if(y > yr) code |=TOP;
@@ -211,7 +215,7 @@ void Drawer::plotSlopPositiveLine (Point P1, Point P2, Color C) {
 	dY = abs(P2.getY() - P1.getY());
 	i = P1.getX();
 	j = P1.getY();
-	
+
 	if (dX >= dY) {
 		p = 2*dY - dX;
 
@@ -257,7 +261,7 @@ void Drawer::plotSlopNegativeLine (Point P1, Point P2, Color C) {
 	if (dX >= dY) {
 		i = P1.getX();
 		j = P1.getY();
-		p = 2*dY - dX;		
+		p = 2*dY - dX;
 
 		for (x=P1.getX(); x<=P2.getX(); x++) {
 			gambarPoint(Point(x, j), C);
@@ -294,15 +298,15 @@ void Drawer::plotSlopNegativeLine (Point P1, Point P2, Color C) {
 
 void Drawer::plotVerticalLine (Point P1, Point P2, Color C) {
 	int j;
-	
+
 	if (P2.getY() < P1.getY()) {
 		Point *temp = new Point(P1.getX(),P1.getY());
 			P1.setX(P2.getX());
 			P1.setY(P2.getY());
 			P2.setX(temp->getX());
-			P2.setY(temp->getY());	
+			P2.setY(temp->getY());
 	}
-	
+
 	for(j = P1.getY() ; j <= P2.getY(); j++) {
 		gambarPoint(Point(P1.getX(),j), C);
 	}
@@ -359,7 +363,7 @@ void Drawer::gambarGaris (Point P1, Point P2, int tebal, Color C) {
 	if(accept){
 		P1 = Point(x0,y0),P2=Point(x1,y1);
 		if (P1.getX() > P2.getX()) {
-			//P1.swapPoint(&P2); 
+			//P1.swapPoint(&P2);
 			Point *temp = new Point(P1.getX(),P1.getY());
 			P1.setX(P2.getX());
 			P1.setY(P2.getY());
@@ -375,8 +379,8 @@ void Drawer::gambarGaris (Point P1, Point P2, int tebal, Color C) {
 		}
 		else {
 			plotSlopPositiveLine(P1,P2,C);
-		}	
+		}
 	}
 
-	
+
 }

@@ -51,27 +51,19 @@ void Canvas::mergeCanvas(Canvas* destination, std::vector<Canvas*> layers) {
 *	x : kordinat x
 *	y : kordinat y
 *	new_color 	: warna buat fill objek
-*	f_color		: warna garis objek (polygon)
 *	b_color		: warna dalam objek sebelum diwarnai. warna backgroundnya.
 */
-void Canvas::boundary_fill (int x, int y, Color new_color, Color f_color, Color b_color) {
+void Canvas::boundary_fill (int x, int y, Color new_color, Color b_color) {
 	Color current;
 	if ((x > xStart) && (x < xEnd) && (y > yStart) && (y < yEnd)) {
 		current = getPixel(x, y);
-		if ((current.getR() != f_color.getR()) && (current.getG() != f_color.getG()) && (current.getB() != f_color.getB())
-		     &&
-		     (current.getR() != new_color.getR()) && (current.getG() != new_color.getG()) && (current.getB() != new_color.getB())) {
+		if (current == b_color) {
 			setPixel (x, y, new_color);
-		
-			boundary_fill(x+1, y, new_color, f_color, b_color);
-			boundary_fill(x, y+1, new_color, f_color, b_color);
-			boundary_fill(x-1, y, new_color, f_color, b_color);
-			boundary_fill(x, y-1, new_color, f_color, b_color);
 
-			boundary_fill(x+1, y+1, new_color, f_color, b_color);
-			boundary_fill(x-1, y+1, new_color, f_color, b_color);
-			boundary_fill(x-1, y-1, new_color, f_color, b_color);
-			boundary_fill(x+1, y-1, new_color, f_color, b_color);
+			boundary_fill(x+1, y, new_color, b_color);
+			boundary_fill(x, y+1, new_color, b_color);
+			boundary_fill(x-1, y, new_color, b_color);
+			boundary_fill(x, y-1, new_color, b_color);
 		}
 	}
 }
