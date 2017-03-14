@@ -1,17 +1,17 @@
-#ifndef CANVAS_H
-#define CANVAS_H
+#ifndef CREDIT_H
+#define CREDIT_H
 
 class Credit {
 public:
     Credit(char* filename);
     ~Credit();
 
-    int* getData();
+    unsigned char* getData();
     int getWidth();
     int getHeight();
 
 private:
-    int* data;
+    unsigned char* data;
     int width;
     int height;
 };

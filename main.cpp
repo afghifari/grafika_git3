@@ -358,9 +358,12 @@ int main(){
 	int i,j;
 	for (i=0;i<lastCredit.getHeight();i++) {
 		for (j=0;j<lastCredit.getWidth();j++) {
-			creditCanvas.setPixel(i,j,new Color(lastCredit.getData()[j * lastCredit.getWidth() + i], 
-												lastCredit.getData()[j * lastCredit.getWidth() + i + 1],
-												lastCredit.getData()[j * lastCredit.getWidth() + i + 2]));
+
+			Color c(lastCredit.getData()[j * lastCredit.getWidth() + i], 
+					lastCredit.getData()[j * lastCredit.getWidth() + i + 1],
+					lastCredit.getData()[j * lastCredit.getWidth() + i + 2]);
+	
+			creditCanvas.setPixel(i,j,c);
 		}
 	}
 

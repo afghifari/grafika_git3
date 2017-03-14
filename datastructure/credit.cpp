@@ -12,10 +12,10 @@ Credit::Credit(char* filename) {
     width = *(int*)&info[18];
     height = *(int*)&info[22];
 
-    data = new int(3*width*height);
+ //   printf("%d %d\n",width,height);
 
     int size = 3 * width * height;
-    unsigned char* data = new unsigned char[size]; // allocate 3 bytes per pixel
+    data = new unsigned char[size]; // allocate 3 bytes per pixel
     fread(data, sizeof(unsigned char), size, f); // read the rest of the data at once
     fclose(f);
 
@@ -32,7 +32,7 @@ Credit::~Credit() {
 	delete data;
 }
 
-int* Credit::getData() {
+unsigned char* Credit::getData() {
 	return data;
 }
 
