@@ -6,6 +6,9 @@ Explosion::Explosion(Point _P) : Shape(13) {
 	scale = 5;
 	center.setX(cx);
 	center.setY(cy);
+
+	animProgress = 0;
+
 	setPoint(0,Point(cx, cy-12*scale));
 			setPoint(1,Point(cx-6*scale,cy-8*scale));
 			setPoint(2,Point(cx-12*scale,cy-4*scale));
@@ -50,4 +53,14 @@ void Explosion::moveByX(int x){
 void Explosion::moveByY( int y){
 	Shape::moveByY(y);
 	center.translate(0,y);
+}
+
+bool Explosion::animate() {
+	if (animProgress < 10) {
+		scaleUp(center, 1.5);
+		animProgress++;
+		return false;
+	} else {
+		return true;
+	}
 }

@@ -160,7 +160,7 @@ void processInput(char chardata){
 		case 'd':
 			//viewPortCenter.setX(viewPortCenter.getX() + 10);
 			Heli->moveByX(10);
-			HeliProp->moveByX(10);			
+			HeliProp->moveByX(10);
 			break;
 		case 's':
 			//viewPortCenter.setY(viewPortCenter.getY() + 10);
@@ -194,26 +194,6 @@ void startKeystrokeThread(){
 	t1.detach();
 }
 
-void *propeller_spin(void *degree){
-	long deg = (long) degree;
-	int deg_cast = (int) deg;
-	while(true){
-		HeliProp->rotate(HeliProp->center, deg_cast);
-		usleep(16000);
-	}
-}
-
-void *explode(void *max_size){
-	double i = Bomb->scale;
-	long max = (long) max_size;
-	int n = (int) max;
-	while (i<n) {
-		Bomb->scaleUp(Bomb->center, i);
-		usleep(16000);
-		i += 0.002;
-	}
-}
-
 int main(){
 	initAll();
 
@@ -222,12 +202,12 @@ int main(){
 
 	drawer.xClipWidth = 600;
 	drawer.yClipHeight = 600;
-	
+
 	b = true, p = true, j = true;
 	startKeystrokeThread();
 
 	bool dirty = true;
-	sh.push_back(Bomb); 
+	sh.push_back(Bomb);
 	//add helicopter to shape vector
 	sh.push_back(Heli);
 	sh.push_back(HeliProp);
@@ -235,22 +215,22 @@ int main(){
 	pthread_t radius_explosion_thread;
 	int degree = 15;
 	int max_size = 5;
-	int prop_spin = pthread_create(&propeller_spin_thread, NULL, propeller_spin, (void *)degree);
-	int radius_explosion = pthread_create(&radius_explosion_thread, NULL, explode, (void *)max_size);
-	
-	
+
+
 	while(true){
 		//if (dirty) {
-			drawer.xTranslate = -viewPortCenter.getX();
-			drawer.yTranslate = -viewPortCenter.getY();
-			drawer.drawScale = scale;
+		drawer.xTranslate = -viewPortCenter.getX();
+		drawer.yTranslate = -viewPortCenter.getY();
+		drawer.drawScale = scale;
 
-			canvas.clear_all();
+		canvas.clear_all();
 
-			
-			drawer.draw_shapes(sh);
+		drawer.draw_shapes(sh);
 
-			drawCanvas(&canvas);
+		Bomb->animate();
+		HeliProp->animate();
+
+		drawCanvas(&canvas);
 
 			//dirty = false;
 		//}

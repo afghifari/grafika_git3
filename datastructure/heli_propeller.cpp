@@ -5,7 +5,7 @@ HeliPropeller::HeliPropeller(Point _P) : Shape(13) {
 	int cy = _P.getY();
 	center.setX(cx);
 	center.setY(cy);
-	
+
 	scale = 5;
 	setPoint(0,Point(cx-scale,cy-scale));
 			setPoint(1,Point(cx-12*scale,cy-scale));
@@ -53,3 +53,7 @@ void HeliPropeller::moveByY( int y){
 	center.translate(0,y);
 }
 
+bool HeliPropeller::animate() {
+	rotate(center, 15);
+	return false;
+}

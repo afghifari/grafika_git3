@@ -1,8 +1,9 @@
 #ifndef HELIP_H
 #define HELIP_H
 #include "shape.h"
+#include "animatable.h"
 
-class HeliPropeller: public Shape {
+class HeliPropeller : public Shape, public Animatable {
 	public:
 		HeliPropeller(Point);
 		HeliPropeller(Point, int);
@@ -10,7 +11,7 @@ class HeliPropeller: public Shape {
 		Point center;
 		void moveByX( int x);
 		void moveByY(int y);
-
+		virtual bool animate();
 };
 
 #endif
