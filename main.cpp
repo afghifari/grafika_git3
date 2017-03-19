@@ -152,9 +152,10 @@ void processInput(char chardata){
 		case 'e':
 			hole = new Circle(100, Heli->center);
 			explosion = new Explosion(Heli->center);
-			hole->color = Color(20, 20, 20);
+			hole->color = Color(rand()%255, rand()%255, rand()%255);
 			holes.push_back(hole);
 			explosions.push_back(explosion);
+			holeNewlyAdded = true;
 			break;
 		case 'w':
 			Heli->moveByY(-10);
@@ -204,6 +205,8 @@ void startKeystrokeThread(){
 }
 
 int main(){
+	srand(time(NULL));
+
 	initAll();
 
 	Canvas canvas;
@@ -241,6 +244,9 @@ int main(){
 	Drawer holeHelicamDrawer(helicamDrawer);
 	holeHelicamDrawer.destination = &holeCanvas;
 
+	holeMainDrawer.topFirstMode = true;
+	holeHelicamDrawer.topFirstMode = true;
+
 	Drawer explosionDrawer(mainDrawer);
 	explosionDrawer.destination = &explosionCanvas;
 
@@ -273,8 +279,19 @@ int main(){
 
 		// Hole rendering
 		holeCanvas.clear_all();
-		holeMainDrawer.draw_circles(holes);
-		holeHelicamDrawer.draw_circles(holes);
+
+		for (int i = holes.size() - 1; i >= 0 ; i--) {
+			holeMainDrawer.draw_circle(holes[i]);
+			holeHelicamDrawer.draw_circle(holes[i]);
+			if (holeNewlyAdded) {
+				Canvas::mergeCanvas(&canvas, canvases);
+				drawCanvas(&canvas);
+				usleep(100000);
+			};
+		}
+		holeNewlyAdded = false;
+		// holeMainDrawer.draw_circles(holes);
+		// holeHelicamDrawer.draw_circles(holes);
 
 		// Explosion rendering
 		explosionCanvas.clear_all();

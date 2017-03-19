@@ -22,6 +22,8 @@ Drawer::Drawer(Canvas* c) {
 
 	xr = 800;
 	yr = 600;
+
+	topFirstMode = false;
 }
 
 void Drawer::draw_shapes(std::vector<Shape*> shapes) {
@@ -176,7 +178,8 @@ void Drawer::gambarPoint(const Point& P, Color color){
 	int xd = x + xOffset;
 	int y = P.getY();
 	int yd = y + yOffset;
-	bool performDraw = x >= 0 && y >= 0 && x < xClipWidth && y < yClipHeight;
+	bool performDraw = x >= 0 && y >= 0 && x < xClipWidth && y < yClipHeight
+	                   && (!topFirstMode || destination->getPixel(x, y) == destination->transparent);
 	if (performDraw) {
 		destination->setPixel(xd, yd, color);
 	}

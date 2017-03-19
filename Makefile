@@ -5,7 +5,7 @@ main: $(SOURCES) $(HEADERS)
 	g++ -o main $(SOURCES) -lpthread -lm -std=c++0x -pthread -O2
 
 maindebug: $(SOURCES) $(HEADERS)
-	g++ -o maindebug $(SOURCES) -lpthread -lm -std=c++0x -pthread -O2 -g
+	g++ -o maindebug $(SOURCES) -lpthread -lm -std=c++0x -pthread -g
 
 clean:
 	rm main

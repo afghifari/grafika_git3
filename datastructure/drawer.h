@@ -34,6 +34,7 @@ public:
   int yTranslate;
   double drawScale;
 
+  bool topFirstMode;
 
 	int getcode(Point P);
 	int getcode(double x, double y);
